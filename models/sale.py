@@ -17,16 +17,23 @@ class SaleOrder(models.Model):
         precompute=True,
         store=True,
         readonly=False,
+        states={
+            "sale": [("readonly", True)],
+            "done": [("readonly", True)],
+            "cancel": [("readonly", True)],
+        },
         ondelete="restrict",
         copy=True,
         check_company=True,
     )
-    order_type_required = fields.Boolean(related="company_id.sale_order_type_required")
     # Fields converted to computed writable
     picking_policy = fields.Selection(
         compute="_compute_picking_policy", store=True, readonly=False
     )
     incoterm = fields.Many2one(compute="_compute_incoterm", store=True, readonly=False)
+    analytic_account_id = fields.Many2one(
+        compute="_compute_analytic_account_id", store=True, readonly=False
+    )
 
     @api.model
     def _default_type_id(self):
@@ -78,14 +85,7 @@ class SaleOrder(models.Model):
                 order.warehouse_id = order_type.warehouse_id
         return res
 
-    def _depends_picking_policy(self):
-        depends = []
-        if hasattr(super(), "_depends_picking_policy"):
-            depends = super()._depends_picking_policy()
-        depends.append("type_id")
-        return depends
-
-    @api.depends(lambda self: self._depends_picking_policy())
+    @api.depends("type_id")
     def _compute_picking_policy(self):
         res = None
         if hasattr(super(), "_compute_picking_policy"):
@@ -123,6 +123,17 @@ class SaleOrder(models.Model):
             order_type = order.type_id
             if order_type.incoterm_id:
                 order.incoterm = order_type.incoterm_id
+        return res
+
+    @api.depends("type_id")
+    def _compute_analytic_account_id(self):
+        res = None
+        if hasattr(super(), "_compute_analytic_account_id"):
+            res = super()._compute_analytic_account_id()
+        for order in self.filtered("type_id"):
+            order_type = order.type_id
+            if order_type.analytic_account_id:
+                order.analytic_account_id = order_type.analytic_account_id
         return res
 
     @api.depends("type_id")
@@ -171,14 +182,14 @@ class SaleOrder(models.Model):
                         new_vals["name"] = sale_type.sequence_id.next_by_id(
                             sequence_date=vals.get("date_order")
                         )
-                        super().write(new_vals)
+                        super(SaleOrder, record).write(new_vals)
                     else:
-                        super().write(vals)
+                        super(SaleOrder, record).write(vals)
                 return True
         return super().write(vals)
 
     def _prepare_invoice(self):
-        res = super()._prepare_invoice()
+        res = super(SaleOrder, self)._prepare_invoice()
         if self.type_id.journal_id:
             res["journal_id"] = self.type_id.journal_id.id
         if self.type_id:

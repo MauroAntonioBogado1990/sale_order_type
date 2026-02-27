@@ -17,14 +17,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.14.1\n"
 
 #. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__active
 msgid "Active"
 msgstr "Aktivan"
+
+#. module: sale_order_type
+#: model:ir.model.fields,field_description:sale_order_type.field_sale_order__analytic_account_id
+msgid "Analytic Account"
+msgstr ""
 
 #. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__analytic_account_id
@@ -43,30 +48,14 @@ msgid "Billing Journal"
 msgstr "Dnevnik za račune"
 
 #. module: sale_order_type
-#: model_terms:ir.ui.view,arch_db:sale_order_type.res_config_settings_view_form
-msgid ""
-"Check this if you want the sale order type required on sale order forms."
-msgstr ""
-
-#. module: sale_order_type
 #: model_terms:ir.actions.act_window,help:sale_order_type.sot_sale_order_type_action
 msgid "Click to set a new type for sale order."
 msgstr "Kliknite za dodavanje novog tipa ponuda."
 
 #. module: sale_order_type
-#: model:ir.model,name:sale_order_type.model_res_company
-msgid "Companies"
-msgstr ""
-
-#. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__company_id
 msgid "Company"
 msgstr "Poduzeće"
-
-#. module: sale_order_type
-#: model:ir.model,name:sale_order_type.model_res_config_settings
-msgid "Config Settings"
-msgstr ""
 
 #. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_res_partner
@@ -115,13 +104,6 @@ msgid "ID"
 msgstr "ID"
 
 #. module: sale_order_type
-#: model:ir.model.fields,help:sale_order_type.field_res_company__sale_order_type_required
-#: model:ir.model.fields,help:sale_order_type.field_res_config_settings__sale_order_type_required
-#: model:ir.model.fields,help:sale_order_type.field_sale_order__order_type_required
-msgid "If checked, the sale orders will require a type."
-msgstr ""
-
-#. module: sale_order_type
 #: model:ir.model.fields,help:sale_order_type.field_sale_order__picking_policy
 msgid ""
 "If you deliver all products at once, the delivery order will be scheduled "
@@ -154,6 +136,11 @@ msgid "Journal Entry"
 msgstr "Stavka dnevnika"
 
 #. module: sale_order_type
+#: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type____last_update
+msgid "Last Modified on"
+msgstr "Zadnja promjena"
+
+#. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__write_uid
 msgid "Last Updated by"
 msgstr "Promijenio"
@@ -171,6 +158,7 @@ msgstr "Naziv"
 #. module: sale_order_type
 #. odoo-python
 #: code:addons/sale_order_type/models/sale.py:0
+#, python-format
 msgid "New"
 msgstr "Novo"
 
@@ -216,15 +204,9 @@ msgid "Sale Order Type"
 msgstr "Vrsta ponuda"
 
 #. module: sale_order_type
-#: model:ir.model.fields,field_description:sale_order_type.field_res_company__sale_order_type_required
-#: model:ir.model.fields,field_description:sale_order_type.field_res_config_settings__sale_order_type_required
-#: model:ir.model.fields,field_description:sale_order_type.field_sale_order__order_type_required
-msgid "Sale Order Type Required"
-msgstr ""
-
-#. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_account_bank_statement_line__sale_type_id
 #: model:ir.model.fields,field_description:sale_order_type.field_account_move__sale_type_id
+#: model:ir.model.fields,field_description:sale_order_type.field_account_payment__sale_type_id
 msgid "Sale Type"
 msgstr "Vrsta prodaje"
 
@@ -282,9 +264,6 @@ msgstr "Vrsta prodajnog naloga"
 #: model_terms:ir.ui.view,arch_db:sale_order_type.sot_sale_order_type_search_view
 msgid "Warehouse"
 msgstr "Skladište"
-
-#~ msgid "Last Modified on"
-#~ msgstr "Zadnja promjena"
 
 #~ msgid "The company is automatically set from your user preferences."
 #~ msgstr "Tvrtka je automatski postavljena iz vaših korisničkih postavki."

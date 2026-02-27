@@ -9,10 +9,11 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-20 22:37+0000\n"
-"PO-Revision-Date: 2023-06-10 23:09+0000\n"
-"Last-Translator: Adriano Prado <adrianojprado@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/oca/"
-"teams/23907/pt_BR/)\n"
+"PO-Revision-Date: 2024-05-22 00:00+0000\n"
+"Last-Translator: Rodrigo Macedo <sottomaiormacedotec@users.noreply."
+"translation.odoo-community.org>\n"
+"Language-Team: Portuguese (Brazil) (https://www.transifex.com/oca/teams/"
+"23907/pt_BR/)\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,6 +25,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__active
 msgid "Active"
 msgstr "Ativo"
+
+#. module: sale_order_type
+#: model:ir.model.fields,field_description:sale_order_type.field_sale_order__analytic_account_id
+msgid "Analytic Account"
+msgstr "Conta analítica"
 
 #. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__analytic_account_id
@@ -42,30 +48,14 @@ msgid "Billing Journal"
 msgstr "Diário de Cobrança"
 
 #. module: sale_order_type
-#: model_terms:ir.ui.view,arch_db:sale_order_type.res_config_settings_view_form
-msgid ""
-"Check this if you want the sale order type required on sale order forms."
-msgstr ""
-
-#. module: sale_order_type
 #: model_terms:ir.actions.act_window,help:sale_order_type.sot_sale_order_type_action
 msgid "Click to set a new type for sale order."
 msgstr "Clique para definir um novo tipo de pedido de venda."
 
 #. module: sale_order_type
-#: model:ir.model,name:sale_order_type.model_res_company
-msgid "Companies"
-msgstr ""
-
-#. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__company_id
 msgid "Company"
 msgstr "Empresa"
-
-#. module: sale_order_type
-#: model:ir.model,name:sale_order_type.model_res_config_settings
-msgid "Config Settings"
-msgstr ""
 
 #. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_res_partner
@@ -85,7 +75,7 @@ msgstr "Criado em"
 #. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_res_currency
 msgid "Currency"
-msgstr ""
+msgstr "Moeda"
 
 #. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__description
@@ -114,19 +104,15 @@ msgid "ID"
 msgstr "Identificação"
 
 #. module: sale_order_type
-#: model:ir.model.fields,help:sale_order_type.field_res_company__sale_order_type_required
-#: model:ir.model.fields,help:sale_order_type.field_res_config_settings__sale_order_type_required
-#: model:ir.model.fields,help:sale_order_type.field_sale_order__order_type_required
-msgid "If checked, the sale orders will require a type."
-msgstr ""
-
-#. module: sale_order_type
 #: model:ir.model.fields,help:sale_order_type.field_sale_order__picking_policy
 msgid ""
 "If you deliver all products at once, the delivery order will be scheduled "
 "based on the greatest product lead time. Otherwise, it will be based on the "
 "shortest."
 msgstr ""
+"Se você entregar todos os produtos de uma vez, o pedido de entrega será "
+"agendado com base no maior prazo de entrega do produto. Caso contrário, será "
+"baseado no mais curto."
 
 #. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order__incoterm
@@ -141,6 +127,8 @@ msgid ""
 "International Commercial Terms are a series of predefined commercial terms "
 "used in international transactions."
 msgstr ""
+"Os Termos Comerciais Internacionais são uma série de termos comerciais "
+"predefinidos usados em transações internacionais."
 
 #. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_account_invoice_report
@@ -151,6 +139,11 @@ msgstr "Estatisticas Faturas"
 #: model:ir.model,name:sale_order_type.model_account_move
 msgid "Journal Entry"
 msgstr "Entrada Diario"
+
+#. module: sale_order_type
+#: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type____last_update
+msgid "Last Modified on"
+msgstr "Última atualização em"
 
 #. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_sale_order_type__write_uid
@@ -170,6 +163,7 @@ msgstr "Nome"
 #. module: sale_order_type
 #. odoo-python
 #: code:addons/sale_order_type/models/sale.py:0
+#, python-format
 msgid "New"
 msgstr "Novo"
 
@@ -215,15 +209,9 @@ msgid "Sale Order Type"
 msgstr "Tipo Pedido de Venda"
 
 #. module: sale_order_type
-#: model:ir.model.fields,field_description:sale_order_type.field_res_company__sale_order_type_required
-#: model:ir.model.fields,field_description:sale_order_type.field_res_config_settings__sale_order_type_required
-#: model:ir.model.fields,field_description:sale_order_type.field_sale_order__order_type_required
-msgid "Sale Order Type Required"
-msgstr ""
-
-#. module: sale_order_type
 #: model:ir.model.fields,field_description:sale_order_type.field_account_bank_statement_line__sale_type_id
 #: model:ir.model.fields,field_description:sale_order_type.field_account_move__sale_type_id
+#: model:ir.model.fields,field_description:sale_order_type.field_account_payment__sale_type_id
 msgid "Sale Type"
 msgstr "Tipo Venda"
 
@@ -244,9 +232,8 @@ msgstr "Pedido de Venda"
 
 #. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_sale_order_line
-#, fuzzy
 msgid "Sales Order Line"
-msgstr "Pedido de Venda"
+msgstr "Linha Pedido de Venda"
 
 #. module: sale_order_type
 #: model:ir.actions.act_window,name:sale_order_type.sot_sale_order_type_action
@@ -280,9 +267,6 @@ msgstr "Tipo Pedido Venda"
 #: model_terms:ir.ui.view,arch_db:sale_order_type.sot_sale_order_type_search_view
 msgid "Warehouse"
 msgstr "Armazém"
-
-#~ msgid "Last Modified on"
-#~ msgstr "Última atualização em"
 
 #~ msgid "Invoice"
 #~ msgstr "Fatura"

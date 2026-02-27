@@ -4,16 +4,25 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 from freezegun import freeze_time
 
+import odoo.tests.common as common
 from odoo import fields
-from odoo.tests import Form
-
-from odoo.addons.base.tests.common import BaseCommon
+from odoo.tests import Form, tagged
 
 
-class TestSaleOrderType(BaseCommon):
+@tagged("post_install", "-at_install")
+class TestSaleOrderType(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        if not cls.env.company.chart_template_id:
+            # Load a CoA if there's none in current company
+            coa = cls.env.ref("l10n_generic_coa.configurable_chart_template", False)
+            if not coa:
+                # Load the first available CoA
+                coa = cls.env["account.chart.template"].search(
+                    [("visible", "=", True)], limit=1
+                )
+            coa.try_loading(company=cls.env.company, install_demo=False)
         cls.sale_type_model = cls.env["sale.order.type"]
         cls.sale_order_model = cls.env["sale.order"]
         cls.invoice_model = cls.env["account.move"].with_context(
@@ -44,7 +53,7 @@ class TestSaleOrderType(BaseCommon):
             }
         )
         cls.journal = cls.env["account.journal"].search(
-            [("type", "=", "sale")], limit=1
+            [("type", "=", "sale"), ("company_id", "=", cls.env.company.id)], limit=1
         )
         cls.default_sale_type_id = cls.env["sale.order.type"].search([], limit=1)
         cls.default_sale_type_id.sequence_id = False
@@ -55,9 +64,7 @@ class TestSaleOrderType(BaseCommon):
             {"type": "service", "invoice_policy": "order", "name": "Test product"}
         )
         cls.immediate_payment = cls.env.ref("account.account_payment_term_immediate")
-        cls.sale_pricelist = cls.env["product.pricelist"].create(
-            {"name": "Public Pricelist", "sequence": 1}
-        )
+        cls.sale_pricelist = cls.env.ref("product.list0")
         cls.free_carrier = cls.env.ref("account.incoterm_FCA")
         cls.sale_type = cls.sale_type_model.create(
             {
@@ -267,72 +274,3 @@ class TestSaleOrderType(BaseCommon):
     def test_res_partner_copy_data(self):
         new_partner = self.partner.copy()
         self.assertEqual(self.partner.sale_type, new_partner.sale_type)
-
-    def test_sale_order_type_required(self):
-        sale_form = Form(self.env["sale.order"])
-        sale_form.partner_id = self.partner
-        with sale_form.order_line.new() as order_line:
-            order_line.product_id = self.product
-            order_line.product_uom_qty = 1.0
-        sale_form.type_id = self.sale_type.browse()
-        with self.assertRaises(AssertionError):
-            sale_form.save()
-
-    def test_sale_order_type_not_required(self):
-        self.env.company.sale_order_type_required = False
-        sale_form = Form(self.env["sale.order"])
-        sale_form.partner_id = self.partner
-        with sale_form.order_line.new() as order_line:
-            order_line.product_id = self.product
-            order_line.product_uom_qty = 1.0
-        sale_form.type_id = self.sale_type.browse()
-        sale_form.save()
-
-    def test_credit_note_preserves_sale_type_from_sale_order(self):
-        """Test credit notes preserve sale order type.
-
-        When creating a credit note (refund) from an invoice that originated
-        from a sale order, the sale_type_id from the sale order should be
-        maintained and not overridden by the partner's default sale type.
-        """
-        # Create a test partner with a specific default sale type
-        test_partner = self.env["res.partner"].create(
-            {
-                "name": "Test Partner",
-                "sale_type": self.sale_type_quot.id,
-            }
-        )
-        # Create and confirm a sale order with a DIFFERENT sale type
-        # than partner's default
-        sale_form = Form(self.env["sale.order"])
-        sale_form.partner_id = test_partner
-        sale_form.type_id = self.sale_type
-        with sale_form.order_line.new() as order_line:
-            order_line.product_id = self.product
-        sale_order = sale_form.save()
-        sale_order.action_confirm()
-        invoice = sale_order._create_invoices()
-        invoice.action_post()
-        # Create a credit note (refund) from the invoice
-        refund_wizard = (
-            self.env["account.move.reversal"]
-            .with_context(active_model="account.move", active_ids=invoice.ids)
-            .create(
-                {
-                    "reason": "Test refund",
-                    "journal_id": invoice.journal_id.id,
-                }
-            )
-        )
-        refund_action = refund_wizard.refund_moves()
-        credit_note = self.env["account.move"].browse(refund_action["res_id"])
-        # CRITICAL ASSERTION: Credit note should preserve the sale order's type,
-        # NOT default to the partner's sale type
-        self.assertEqual(
-            credit_note._origin.sale_type_id,
-            sale_order.type_id,
-            "Credit note should preserve sale type from sale order "
-            f"(expected: {sale_order.type_id.name}), "
-            "not use partner's default sale type "
-            f"(partner has: {sale_order.partner_id.sale_type.name})",
-        )
